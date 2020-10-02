@@ -1,28 +1,18 @@
 import React from 'react';
 import { formatNumber } from '../helpers/formatNumber';
 
-export default function Summary({ currentTransactionsData }) {
-  const { transactionsNumber, balance } = currentTransactionsData;
-
-  const positiveTransactions = currentTransactionsData.transactionsList.filter(
-    (transaction) => transaction.type === '+'
-  );
-
-  const negativeTransactions = currentTransactionsData.transactionsList.filter(
-    (transaction) => transaction.type === '-'
-  );
-
-  const incomings = positiveTransactions.reduce(
-    (acc, curr) => acc + curr.value,
-    0
-  );
-
-  const outgoings = negativeTransactions.reduce(
-    (acc, curr) => acc + curr.value,
-    0
-  );
-
-  const { summaryStyle, positiveBalance, negativeBalance } = styles;
+export default function Summary({
+  incomings,
+  outgoings,
+  balance,
+  transactionsNumber,
+}) {
+  const {
+    summaryStyle,
+    positiveBalance,
+    negativeBalance,
+    nullBalance,
+  } = styles;
 
   return (
     <div style={summaryStyle}>
@@ -40,7 +30,15 @@ export default function Summary({ currentTransactionsData }) {
       </span>
       <span>
         <strong>Saldo: </strong>
-        <span style={positiveBalance}>
+        <span
+          style={
+            balance > 0
+              ? positiveBalance
+              : balance < 0
+              ? negativeBalance
+              : nullBalance
+          }
+        >
           <strong>{formatNumber(balance)}</strong>
         </span>
       </span>
@@ -68,6 +66,10 @@ const styles = {
   },
 
   negativeBalance: {
-    fontColor: '#c0392b',
+    color: '#c0392b',
+  },
+
+  nullBalance: {
+    color: 'black',
   },
 };

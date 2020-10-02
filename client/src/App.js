@@ -6,7 +6,6 @@ import { getTransactionFrom } from './api/apiService';
 import Spinner from './components/Spinner';
 import Summary from './components/Summary';
 import Filter from './components/Filter';
-import { set } from 'mongoose';
 
 export default function App() {
   // period = {id:n, date:yyyy-mm, name:'nome_mes/yyyy'}
@@ -52,11 +51,10 @@ export default function App() {
           transaction.category.toLowerCase().includes(lowerCaseCategory)
       );
 
-      const transactionsNumber = filteredTransactions.length;
+      // const transactionsNumber = filteredTransactions.length;
 
-      const balance = filteredTransactions.reduce(
-        (acc, curr) => acc + curr.value,
-        0
+      const { balance, transactionsNumber } = getDataFromTransactions(
+        filteredTransactions
       );
 
       const newFilteredTransactionsData = {
@@ -68,6 +66,40 @@ export default function App() {
       setFilteredTransactionsData(newFilteredTransactionsData);
     }
   };
+
+  // transactions: array apenas com lançamentos
+  const getDataFromTransactions = (transactions) => {
+    const transactionsNumber = transactions.length;
+
+    const positiveTransactions = transactions.filter(
+      (transaction) => transaction.type === '+'
+    );
+
+    const negativeTransactions = transactions.filter(
+      (transaction) => transaction.type === '-'
+    );
+
+    const incomings = positiveTransactions.reduce(
+      (acc, curr) => acc + curr.value,
+      0
+    );
+
+    const outgoings = negativeTransactions.reduce(
+      (acc, curr) => acc + curr.value,
+      0
+    );
+
+    const balance = incomings - outgoings;
+
+    return { incomings, outgoings, balance, transactionsNumber };
+  };
+
+  const {
+    incomings,
+    outgoings,
+    balance,
+    transactionsNumber,
+  } = getDataFromTransactions(filteredTransactionsData.transactionsList);
 
   return (
     <>
@@ -94,7 +126,12 @@ export default function App() {
           currentPeriod={currentPeriod}
           onChangePeriod={handlePeriodChange}
         />
-        <Summary currentTransactionsData={filteredTransactionsData} />
+        <Summary
+          balance={balance}
+          incomings={incomings}
+          outgoings={outgoings}
+          transactionsNumber={transactionsNumber}
+        />
         <Filter onFilterChange={handleFilterChange} />
         <Transactions currentTransactionsData={filteredTransactionsData} />
       </div>

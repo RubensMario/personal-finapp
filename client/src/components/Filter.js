@@ -1,4 +1,5 @@
 import React from 'react';
+import './filter.css';
 
 export default function Filter({ textToFilter, onFilterChange }) {
   const handleInputChange = (event) => {
@@ -7,7 +8,7 @@ export default function Filter({ textToFilter, onFilterChange }) {
   };
 
   return (
-    <div style={{ padding: '3%' }}>
+    <div className="input-field" style={{ padding: '3%' }}>
       <input
         type="text"
         placeholder="Buscar lançamentos por categoria"

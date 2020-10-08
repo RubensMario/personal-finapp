@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Select from './components/PeriodSelector';
 import Transactions from './components/Transactions';
 import PERIODS from './helpers/periods';
-import { getTransactionFrom } from './api/apiService';
+import { getTransactionsFrom, deleteTransaction } from './api/apiService';
 import Spinner from './components/Spinner';
 import Summary from './components/Summary';
 import Filter from './components/Filter';
@@ -20,17 +20,17 @@ export default function App() {
     transactionsList: [],
   });
 
+  async function getCurrentTransactions(date) {
+    // Impedir execução antes de currentPeriod ser preenchido
+    if (!currentPeriod.date) return;
+
+    const transactions = await getTransactionsFrom(date);
+
+    setCurrentTransactionsData(transactions);
+    setFilteredTransactionsData(transactions);
+  }
+
   useEffect(() => {
-    async function getCurrentTransactions(date) {
-      // Impedir execução antes de currentPeriod ser preenchido
-      if (!currentPeriod.date) return;
-
-      const transactions = await getTransactionFrom(date);
-
-      setCurrentTransactionsData(transactions);
-      setFilteredTransactionsData(transactions);
-    }
-
     const currentDate = currentPeriod.date;
     getCurrentTransactions(currentDate);
   }, [currentPeriod]);
@@ -50,8 +50,6 @@ export default function App() {
         (transaction) =>
           transaction.category.toLowerCase().includes(lowerCaseCategory)
       );
-
-      // const transactionsNumber = filteredTransactions.length;
 
       const { balance, transactionsNumber } = getDataFromTransactions(
         filteredTransactions
@@ -94,6 +92,15 @@ export default function App() {
     return { incomings, outgoings, balance, transactionsNumber };
   };
 
+  const handleEditTransaction = (_id) => {
+    console.log('edit ' + _id);
+  };
+
+  const handleDeleteTransaction = async (_id) => {
+    await deleteTransaction(_id);
+    await getCurrentTransactions(currentPeriod.date);
+  };
+
   const {
     incomings,
     outgoings,
@@ -133,7 +140,11 @@ export default function App() {
           transactionsNumber={transactionsNumber}
         />
         <Filter onFilterChange={handleFilterChange} />
-        <Transactions currentTransactionsData={filteredTransactionsData} />
+        <Transactions
+          currentTransactionsData={filteredTransactionsData}
+          onEditTransaction={handleEditTransaction}
+          onDeleteTransaction={handleDeleteTransaction}
+        />
       </div>
     </>
   );

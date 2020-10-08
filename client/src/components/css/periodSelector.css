@@ -1,0 +1,10 @@
+/* Cor do texto na lista do Select*/
+ul.dropdown-content.select-dropdown li span {
+  color: #000; /* no need for !important :) */
+}
+
+/* Cor do underline (linha sombreada) abaixo do select */
+.input-field input[type='text']:focus {
+  border-bottom: 1px solid #2196f3;
+  box-shadow: 0 1px 0 0#2196f3 blue;
+}

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import M from 'materialize-css';
 import './style.css';
 import ArrowButton from './ArrowButton';
+import './css/periodSelector.css';
 
 export default function Select({ onChangePeriod, allPeriods, currentPeriod }) {
   const [isFirstPeriod, setIsFirstPeriod] = useState(false);
@@ -55,8 +56,15 @@ export default function Select({ onChangePeriod, allPeriods, currentPeriod }) {
         onButtonClick={handleLeftButtonClick}
         buttonDisabled={isFirstPeriod}
       />
-      <div style={{ width: '15%', alignItems: 'center' }}>
-        <select value={currentPeriod.id} onChange={handleSelectChange}>
+      <div
+        className="input-field"
+        style={{ width: '15%', alignItems: 'center' }}
+      >
+        <select
+          className="waves-purple"
+          value={currentPeriod.id}
+          onChange={handleSelectChange}
+        >
           {allPeriods.map((period) => {
             const { id, name } = period;
             return (

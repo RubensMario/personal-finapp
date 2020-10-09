@@ -3,15 +3,16 @@ import Action from './Action';
 import { formatNumber } from '../helpers/formatNumber';
 
 export default function Transaction({ transaction, onEdit, onDelete }) {
-  const { _id, description, value, category, day } = transaction;
+  const { _id, description, value, category, day, type } = transaction;
 
   const {
     transactionStyle,
     containerStyle,
     dayStyle,
     descriptionAndTypeStyle,
-    valueStyle,
     actionAndValueStyle,
+    incomingValue,
+    outgoingValue,
   } = styles;
 
   /* Outra forma de uso de object literals em handleActionClick */
@@ -47,7 +48,7 @@ export default function Transaction({ transaction, onEdit, onDelete }) {
       </div>
       <div className="actionAndValue" style={actionAndValueStyle}>
         <div style={{ marginLeft: '30px', width: '8rem' }}>
-          <span styles={valueStyle}>
+          <span style={type === '+' ? incomingValue : outgoingValue}>
             <strong>{formatNumber(value)}</strong>
           </span>
         </div>
@@ -94,5 +95,13 @@ const styles = {
     padding: '2%',
     justifyContent: 'space-between',
     width: '50%', // Fundamental para o alinhamento dos valores dos lançamentos
+  },
+
+  incomingValue: {
+    color: '#2980b9',
+  },
+
+  outgoingValue: {
+    color: '#c0392b',
   },
 };

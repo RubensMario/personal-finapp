@@ -57,7 +57,6 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '5px',
-    margin: '10px',
     marginTop: '2%',
   },
 

@@ -1,7 +1,7 @@
 import React from 'react';
-import './filter.css';
+import './css/filter.css';
 
-export default function Filter({ textToFilter, onFilterChange }) {
+export default function Filter({ onFilterChange }) {
   const handleInputChange = (event) => {
     const inputText = event.target.value;
     onFilterChange(inputText);
@@ -12,7 +12,6 @@ export default function Filter({ textToFilter, onFilterChange }) {
       <input
         type="text"
         placeholder="Buscar lançamentos por categoria"
-        // value={textToFilter}
         onChange={handleInputChange}
       />
     </div>

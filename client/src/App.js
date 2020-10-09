@@ -6,6 +6,7 @@ import { getTransactionsFrom, deleteTransaction } from './api/apiService';
 import Spinner from './components/Spinner';
 import Summary from './components/Summary';
 import Filter from './components/Filter';
+import ModalTransaction from './components/ModalTransaction';
 
 export default function App() {
   // period = {id:n, date:yyyy-mm, name:'nome_mes/yyyy'}
@@ -19,6 +20,16 @@ export default function App() {
   const [filteredTransactionsData, setFilteredTransactionsData] = useState({
     transactionsList: [],
   });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const currentDate = currentPeriod.date;
+    getCurrentTransactions(currentDate);
+  }, [currentPeriod]);
+
+  const handlePeriodChange = (newPeriod) => {
+    setCurrentPeriod(newPeriod);
+  };
 
   async function getCurrentTransactions(date) {
     // Impedir execução antes de currentPeriod ser preenchido
@@ -29,15 +40,6 @@ export default function App() {
     setCurrentTransactionsData(transactions);
     setFilteredTransactionsData(transactions);
   }
-
-  useEffect(() => {
-    const currentDate = currentPeriod.date;
-    getCurrentTransactions(currentDate);
-  }, [currentPeriod]);
-
-  const handlePeriodChange = (newPeriod) => {
-    setCurrentPeriod(newPeriod);
-  };
 
   const handleFilterChange = (newTextToFilter) => {
     // Sem texto no filtro, exibir todas as transações do mês
@@ -94,11 +96,16 @@ export default function App() {
 
   const handleEditTransaction = (_id) => {
     console.log('edit ' + _id);
+    setIsModalOpen(true);
   };
 
   const handleDeleteTransaction = async (_id) => {
     await deleteTransaction(_id);
     await getCurrentTransactions(currentPeriod.date);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
   };
 
   const {
@@ -128,11 +135,13 @@ export default function App() {
         {/* <h4 className="center" style={{ padding: '5%' }}>
           <strong>CONTROLE FINANCEIRO</strong>
         </h4> */}
-        <Select
-          allPeriods={PERIODS}
-          currentPeriod={currentPeriod}
-          onChangePeriod={handlePeriodChange}
-        />
+        {!isModalOpen && (
+          <Select
+            allPeriods={PERIODS}
+            currentPeriod={currentPeriod}
+            onChangePeriod={handlePeriodChange}
+          />
+        )}
         <Summary
           balance={balance}
           incomings={incomings}
@@ -145,6 +154,9 @@ export default function App() {
           onEditTransaction={handleEditTransaction}
           onDeleteTransaction={handleDeleteTransaction}
         />
+        {isModalOpen && (
+          <ModalTransaction isOpen={isModalOpen} onClose={handleModalClose} />
+        )}
       </div>
     </>
   );

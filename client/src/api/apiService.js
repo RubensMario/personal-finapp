@@ -12,7 +12,7 @@ async function getTransactionsFrom(date) {
 }
 
 async function deleteTransaction(_id) {
-  const response = await api.delete(`${RESOURCE}/${_id}`);
+  await api.delete(`${RESOURCE}/${_id}`);
 
   return;
 }

@@ -1,14 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
+import './css/modalTransaction.css';
 
 Modal.setAppElement('#root');
 
 export default function ModalTransaction({ isOpen, onClose }) {
+  const [mode, setMode] = useState('insert');
+  const [type, setType] = useState('-');
+
   const handleCloseButton = () => {
     onClose();
   };
 
   const handleFormSubmit = () => {};
+
+  const handleRadioChange = (event) => {
+    const newType = event.target.value;
+    // A cada troca de type será renderizada a seleção de um botão
+    // tornando-o colorido
+    setType(newType);
+  };
 
   const { closeButtonStyle, modalStyle, headerStyle } = styles;
 
@@ -20,7 +31,7 @@ export default function ModalTransaction({ isOpen, onClose }) {
             <strong>Edição de lançamento</strong>
           </h6>
           <button
-            className="waves-effect btn"
+            className="waves-effect waves-circle btn-small"
             style={closeButtonStyle}
             onClick={handleCloseButton}
           >
@@ -28,9 +39,39 @@ export default function ModalTransaction({ isOpen, onClose }) {
           </button>
         </div>
         <form action="" onSubmit={handleFormSubmit}>
-          <legend>
-            <label>Tipo</label>
-          </legend>
+          <fieldset>
+            <legend>
+              <label>Tipo</label>
+            </legend>
+            <div className="item-type">
+              <label>
+                <input
+                  name="type"
+                  type="radio"
+                  value="-"
+                  onChange={handleRadioChange}
+                  checked={type === '-'}
+                  disabled={mode !== 'insert'}
+                />
+                <span>
+                  <strong>Despesa</strong>
+                </span>
+              </label>
+              <label>
+                <input
+                  name="type"
+                  type="radio"
+                  value="+"
+                  onChange={handleRadioChange}
+                  checked={type === '+'}
+                  disabled={mode !== 'insert'}
+                />
+                <span>
+                  <strong>Receita</strong>
+                </span>
+              </label>
+            </div>
+          </fieldset>
         </form>
       </div>
     </Modal>
@@ -39,9 +80,11 @@ export default function ModalTransaction({ isOpen, onClose }) {
 
 const styles = {
   closeButtonStyle: {
+    display: 'flex',
+    justifyContent: 'center', // X centralizado no botão
     backgroundColor: 'white',
-    marginLeft: '5px',
-    marginRight: '5px',
+    marginLeft: '1%',
+    marginRight: '1%',
     fontWeight: 'bold',
     color: 'darkgrey',
   },

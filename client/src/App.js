@@ -20,6 +20,7 @@ export default function App() {
   const [filteredTransactionsData, setFilteredTransactionsData] = useState({
     transactionsList: [],
   });
+  const [selectedTransaction, setSelectedTransaction] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -94,9 +95,14 @@ export default function App() {
     return { incomings, outgoings, balance, transactionsNumber };
   };
 
-  const handleEditTransaction = (_id) => {
-    console.log('edit ' + _id);
+  const handleEditTransaction = (selectedId) => {
+    const newSelectedTransaction = currentTransactionsData.transactionsList.find(
+      (transaction) => transaction._id === selectedId
+    );
+
+    console.log(newSelectedTransaction);
     setIsModalOpen(true);
+    setSelectedTransaction(newSelectedTransaction);
   };
 
   const handleDeleteTransaction = async (_id) => {
@@ -155,7 +161,11 @@ export default function App() {
           onDeleteTransaction={handleDeleteTransaction}
         />
         {isModalOpen && (
-          <ModalTransaction isOpen={isModalOpen} onClose={handleModalClose} />
+          <ModalTransaction
+            isOpen={isModalOpen}
+            onClose={handleModalClose}
+            selectedTransaction={selectedTransaction}
+          />
         )}
       </div>
     </>

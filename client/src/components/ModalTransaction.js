@@ -6,13 +6,15 @@ Modal.setAppElement('#root');
 
 export default function ModalTransaction({
   isOpen,
+  isEdit,
   onClose,
   selectedTransaction,
 }) {
   const [mode, setMode] = useState('insert');
-  // const [type, setType] = useState('-');
-  // const [category, setCategory] = useState('Lazer');
   const [formData, setFormData] = useState(selectedTransaction);
+
+  const { closeButtonStyle, modalStyle, headerStyle, categoryStyle } = styles;
+  const { type, category } = formData;
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
@@ -33,35 +35,25 @@ export default function ModalTransaction({
 
   const handleFormSubmit = () => {};
 
-  // const handleTypeChange = (event) => {
-  //   const selectedType = event.target.value;
-  //   // A cada troca de type será renderizada a seleção de um botão
-  //   // tornando-o colorido
-  //   setType(selectedType);
-  // };
-
-  // const handleCategoryChange = (event) => {
-  //   const selectedCategory = event.target.value;
-  //   setCategory(selectedCategory);
-  // };
-
-  const handleRadioInputsChange = (event) => {
-    const { name, value } = event.target;
-    // name: o que o radio button permite selecionar (ex:type do lançamento)
+  // Cada troca de um radio button modifica o estado formData
+  // e é renderizada a seleção do botão tornando-o colorido
+  const handleInputsChange = (event) => {
+    // name: o que o input permite selecionar (ex:type do lançamento)
     // value: o valor escolhido: (ex: type '+' ou type '-')
+    const { name, value } = event.target;
+
+    // modifica apenas a propriedade indicada com name (type,category, etc)
     setFormData({ ...formData, [name]: value });
     console.log(formData);
   };
 
-  const { closeButtonStyle, modalStyle, headerStyle, categoryStyle } = styles;
-  const { type, category } = formData;
-
+  const title = isEdit ? 'Edição de lançamento' : 'Inserção de lançamento';
   return (
     <Modal isOpen={isOpen} contentLabel="Exemple Modal" style={modalStyle}>
       <div>
         <div style={headerStyle}>
           <h6>
-            <strong>Edição de lançamento</strong>
+            <strong>{title}</strong>
           </h6>
           <i style={closeButtonStyle} onClick={handleCloseButton}>
             x
@@ -78,7 +70,7 @@ export default function ModalTransaction({
                   type="radio"
                   name="type"
                   value="-"
-                  onChange={handleRadioInputsChange}
+                  onChange={handleInputsChange}
                   checked={type === '-'}
                   disabled={mode !== 'insert'}
                 />
@@ -91,7 +83,7 @@ export default function ModalTransaction({
                   type="radio"
                   name="type"
                   value="+"
-                  onChange={handleRadioInputsChange}
+                  onChange={handleInputsChange}
                   checked={type === '+'}
                   disabled={mode !== 'insert'}
                 />
@@ -107,59 +99,99 @@ export default function ModalTransaction({
               <label> Categorias </label>
             </legend>
             <div className="category-items">
-              <label
-                className={formData.category === 'Mercado' ? 'selected' : ''}
-              >
+              <label className={category === 'Mercado' ? 'selected' : ''}>
                 <input
                   type="radio"
                   name="category"
                   value="Mercado"
-                  onChange={handleRadioInputsChange}
+                  onChange={handleInputsChange}
                 />
                 <i className="material-icons small">shopping_cart</i>
                 <span>Mercado</span>
               </label>
 
-              <label
-                className={formData.category === 'Receita' ? 'selected' : ''}
-              >
+              <label className={category === 'Receita' ? 'selected' : ''}>
                 <input
                   type="radio"
                   name="category"
                   value="Receita"
-                  onChange={handleRadioInputsChange}
+                  onChange={handleInputsChange}
                 />
                 <i className="material-icons small">local_atm</i>
                 <span>Receita</span>
               </label>
 
-              <label
-                className={formData.category === 'Saúde' ? 'selected' : ''}
-              >
+              <label className={category === 'Saúde' ? 'selected' : ''}>
                 <input
                   type="radio"
                   name="category"
                   value="Saúde"
-                  onChange={handleRadioInputsChange}
+                  onChange={handleInputsChange}
                 />
                 <i className="material-icons small">local_hospital</i>
                 <span>Saúde</span>
               </label>
 
-              <label
-                className={formData.category === 'Transporte' ? 'selected' : ''}
-              >
+              <label className={category === 'Transporte' ? 'selected' : ''}>
                 <input
                   type="radio"
                   name="category"
                   value="Transporte"
-                  onChange={handleRadioInputsChange}
+                  onChange={handleInputsChange}
                 />
                 <i className="material-icons small">drive_eta</i>
                 <span>Transporte</span>
               </label>
+
+              <label className={category === 'Moradia' ? 'selected' : ''}>
+                <input
+                  type="radio"
+                  name="category"
+                  value="Moradia"
+                  onChange={handleInputsChange}
+                />
+                <i className="material-icons small">home</i>
+                <span>Moradia</span>
+              </label>
+
+              <label className={category === 'Viagem' ? 'selected' : ''}>
+                <input
+                  type="radio"
+                  name="category"
+                  value="Viagem"
+                  onChange={handleInputsChange}
+                />
+                <i className="material-icons small">local_airport</i>
+                <span>Viagem</span>
+              </label>
+
+              <label>
+                <input
+                  type="radio"
+                  name="category"
+                  value="Lazer"
+                  onChange={handleInputsChange}
+                />
+                <i className="material-icons">beach_access</i>
+                <span>Lazer</span>
+              </label>
+
+              <label>
+                <input
+                  type="radio"
+                  name="category"
+                  value="Outros"
+                  onChange={handleInputsChange}
+                />
+                <i className="material-icons">add</i>
+                <span>Outros</span>
+              </label>
             </div>
           </fieldset>
+          <div className="field">
+            <label htmlFor="description">Descrição</label>
+            <input type="text" id="description" name="description" />
+          </div>
         </form>
       </div>
     </Modal>

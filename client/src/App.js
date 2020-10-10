@@ -22,6 +22,7 @@ export default function App() {
   });
   const [selectedTransaction, setSelectedTransaction] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
 
   useEffect(() => {
     const currentDate = currentPeriod.date;
@@ -163,6 +164,7 @@ export default function App() {
         {isModalOpen && (
           <ModalTransaction
             isOpen={isModalOpen}
+            isEdit={isEdit}
             onClose={handleModalClose}
             selectedTransaction={selectedTransaction}
           />

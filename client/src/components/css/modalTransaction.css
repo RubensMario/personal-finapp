@@ -24,7 +24,8 @@ form fieldset {
 
 /* Mudar cor da borda do radio button */
 [type='radio']:checked + span:after {
-  border: 2px solid #2196f3;
+  /* border: 2px solid #2196f3; */
+  border: 2px solid rgb(90, 88, 88);
 }
 
 /* Mudar cor do interior do radio button*/
@@ -78,6 +79,6 @@ form .category-items li span {
 /* Uso de CSS grid*/
 form .category-items {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr; /* nº de buttons por linha*/
   gap: 0.58vw;
 }

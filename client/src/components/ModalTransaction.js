@@ -10,11 +10,11 @@ export default function ModalTransaction({
   onClose,
   selectedTransaction,
 }) {
-  const [mode, setMode] = useState('insert');
+  // const [mode, setMode] = useState('insert');
   const [formData, setFormData] = useState(selectedTransaction);
 
-  const { closeButtonStyle, modalStyle, headerStyle, categoryStyle } = styles;
-  const { type, category } = formData;
+  const { closeButtonStyle, saveButtonStyle, modalStyle, headerStyle } = styles;
+  const { type, category, description, value, yearMonthDay } = formData;
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
@@ -47,7 +47,14 @@ export default function ModalTransaction({
     console.log(formData);
   };
 
+  const validate = () => {
+    const { description, value } = formData;
+    const validated = description && description !== '' && value > 0;
+    return validated;
+  };
+
   const title = isEdit ? 'Edição de lançamento' : 'Inserção de lançamento';
+
   return (
     <Modal isOpen={isOpen} contentLabel="Exemple Modal" style={modalStyle}>
       <div>
@@ -72,7 +79,7 @@ export default function ModalTransaction({
                   value="-"
                   onChange={handleInputsChange}
                   checked={type === '-'}
-                  disabled={mode !== 'insert'}
+                  disabled={isEdit}
                 />
                 <span>
                   <strong>Despesa</strong>
@@ -85,7 +92,7 @@ export default function ModalTransaction({
                   value="+"
                   onChange={handleInputsChange}
                   checked={type === '+'}
-                  disabled={mode !== 'insert'}
+                  disabled={isEdit}
                 />
                 <span>
                   <strong>Receita</strong>
@@ -188,10 +195,62 @@ export default function ModalTransaction({
               </label>
             </div>
           </fieldset>
-          <div className="field">
-            <label htmlFor="description">Descrição</label>
-            <input type="text" id="description" name="description" />
+          <div>
+            <div className="field input-field ">
+              <label htmlFor="description" className="active">
+                Descrição
+              </label>
+              <input
+                type="text"
+                id="description"
+                name="description"
+                required
+                pattern="[A-Za-zÀ-ú\s]+$"
+                defaultValue={formData && description}
+                onChange={handleInputsChange}
+              />
+            </div>
+
+            <div className="field-group">
+              <div className="field">
+                <label htmlFor="value" className="active">
+                  Valor
+                </label>
+                <input
+                  id="value"
+                  name="value"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  required
+                  defaultValue={formData && value}
+                  onChange={handleInputsChange}
+                  style={{ width: '80%' }}
+                />
+              </div>
+
+              <div className="field">
+                <label className="yearMonthDay">Data</label>
+                <input
+                  id="yearMonthDay"
+                  name="yearMonthDay"
+                  type="date"
+                  required
+                  defaultValue={formData && yearMonthDay}
+                  onChange={handleInputsChange}
+                  style={{ width: '80%' }}
+                />
+              </div>
+            </div>
           </div>
+          <button
+            type="submit"
+            className="waves-effect btn-small"
+            disabled={!validate()}
+            style={saveButtonStyle}
+          >
+            Salvar
+          </button>
         </form>
       </div>
     </Modal>
@@ -209,6 +268,16 @@ const styles = {
     color: '#9E9E9E',
     cursor: 'pointer',
   },
+
+  saveButtonStyle: {
+    backgroundColor: 'white',
+    marginTop: '3px',
+    marginLeft: '5px',
+    marginRight: '5px',
+    fontWeight: 'bold',
+    color: 'darkgrey',
+  },
+
   modalStyle: {
     content: {
       top: '50%',
@@ -216,27 +285,27 @@ const styles = {
       right: 'auto',
       bottom: 'auto',
       marginRight: '-50%',
-      transform: 'translate(-50%, -50%)', // move um objeto nos eixos x e y
+      transform: 'translate(-50%, -40%)', // move um objeto nos eixos x e y
     },
   },
   headerStyle: {
     display: 'flex',
     flexDirection: 'row',
   },
-  categoryStyle: {
-    backgroundColor: '#f5f5f5',
-    listStyle: 'none',
-    border: '2px solid #f5f5f5',
-    borderRadius: '8px',
-    height: '90px',
-    padding: '18px, 12px, 6px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    textAlign: 'center',
-    cursor: 'pointer',
-  },
+  // categoryStyle: {
+  //   backgroundColor: '#f5f5f5',
+  //   listStyle: 'none',
+  //   border: '2px solid #f5f5f5',
+  //   borderRadius: '8px',
+  //   height: '90px',
+  //   padding: '18px, 12px, 6px',
+  //   display: 'flex',
+  //   flexDirection: 'column',
+  //   alignItems: 'center',
+  //   justifyContent: 'space-between',
+  //   textAlign: 'center',
+  //   cursor: 'pointer',
+  // },
 };
 
 // Opção de botão para fechar modal

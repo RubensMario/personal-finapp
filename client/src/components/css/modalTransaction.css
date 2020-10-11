@@ -82,3 +82,20 @@ form .category-items {
   grid-template-columns: 1fr 1fr 1fr 1fr; /* nº de buttons por linha*/
   gap: 0.58vw;
 }
+
+form .field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-top: 10%;
+}
+
+/* form .field-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.58vw;
+} */
+
+form .field-group {
+  display: flex;
+}

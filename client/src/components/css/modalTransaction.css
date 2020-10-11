@@ -79,8 +79,9 @@ form .category-items li span {
 /* Uso de CSS grid*/
 form .category-items {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr; /* nº de buttons por linha*/
-  gap: 0.58vw;
+  grid-template-columns: 0.5fr 0.5fr 0.5fr 0.5fr; /* nº de buttons por linha*/
+  grid-template-rows: 0.2fr 0.2fr;
+  gap: 0.2vw;
 }
 
 form .field {
@@ -98,4 +99,18 @@ form .field {
 
 form .field-group {
   display: flex;
+}
+
+/* .text-inputs-style {
+  display: grid;
+  grid-template-rows: 1 1;
+} */
+
+label,
+input {
+  display: block;
+}
+
+label {
+  margin-bottom: 0.01px;
 }

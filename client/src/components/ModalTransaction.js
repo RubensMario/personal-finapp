@@ -13,7 +13,14 @@ export default function ModalTransaction({
   // const [mode, setMode] = useState('insert');
   const [formData, setFormData] = useState(selectedTransaction);
 
-  const { closeButtonStyle, saveButtonStyle, modalStyle, headerStyle } = styles;
+  const {
+    closeButtonStyle,
+    saveButtonStyle,
+    modalStyle,
+    headerStyle,
+    textInputsStyle,
+  } = styles;
+
   const { type, category, description, value, yearMonthDay } = formData;
 
   useEffect(() => {
@@ -172,7 +179,7 @@ export default function ModalTransaction({
                 <span>Viagem</span>
               </label>
 
-              <label>
+              <label className={category === 'Lazer' ? 'selected' : ''}>
                 <input
                   type="radio"
                   name="category"
@@ -183,7 +190,7 @@ export default function ModalTransaction({
                 <span>Lazer</span>
               </label>
 
-              <label>
+              <label className={category === 'Outros' ? 'selected' : ''}>
                 <input
                   type="radio"
                   name="category"
@@ -195,7 +202,7 @@ export default function ModalTransaction({
               </label>
             </div>
           </fieldset>
-          <div>
+          <div className="text-inputs-style">
             <div className="field input-field ">
               <label htmlFor="description" className="active">
                 Descrição
@@ -208,6 +215,7 @@ export default function ModalTransaction({
                 pattern="[A-Za-zÀ-ú\s]+$"
                 defaultValue={formData && description}
                 onChange={handleInputsChange}
+                style={{ height: '30px', fontSize: '15px' }}
               />
             </div>
 
@@ -225,7 +233,7 @@ export default function ModalTransaction({
                   required
                   defaultValue={formData && value}
                   onChange={handleInputsChange}
-                  style={{ width: '80%' }}
+                  style={{ width: '80%', height: '20px', fontSize: '15px' }}
                 />
               </div>
 
@@ -238,19 +246,20 @@ export default function ModalTransaction({
                   required
                   defaultValue={formData && yearMonthDay}
                   onChange={handleInputsChange}
-                  style={{ width: '80%' }}
+                  style={{ width: '80%', height: '20px', fontSize: '15px' }}
                 />
               </div>
             </div>
+
+            <button
+              type="submit"
+              className="waves-effect btn-small"
+              disabled={!validate()}
+              style={saveButtonStyle}
+            >
+              Salvar
+            </button>
           </div>
-          <button
-            type="submit"
-            className="waves-effect btn-small"
-            disabled={!validate()}
-            style={saveButtonStyle}
-          >
-            Salvar
-          </button>
         </form>
       </div>
     </Modal>
@@ -263,7 +272,6 @@ const styles = {
     justifyContent: 'center', // X centralizado no botão
     backgroundColor: 'white',
     marginLeft: 'auto',
-    // marginRight: '1%',
     fontWeight: 'bold',
     color: '#9E9E9E',
     cursor: 'pointer',
@@ -276,36 +284,30 @@ const styles = {
     marginRight: '5px',
     fontWeight: 'bold',
     color: 'darkgrey',
+    alignItems: 'right',
   },
 
   modalStyle: {
     content: {
-      top: '50%',
+      top: '45%',
       left: '50%',
       right: 'auto',
       bottom: 'auto',
       marginRight: '-50%',
       transform: 'translate(-50%, -40%)', // move um objeto nos eixos x e y
+      // height: '90%',
     },
   },
   headerStyle: {
     display: 'flex',
     flexDirection: 'row',
   },
-  // categoryStyle: {
-  //   backgroundColor: '#f5f5f5',
-  //   listStyle: 'none',
-  //   border: '2px solid #f5f5f5',
-  //   borderRadius: '8px',
-  //   height: '90px',
-  //   padding: '18px, 12px, 6px',
-  //   display: 'flex',
-  //   flexDirection: 'column',
-  //   alignItems: 'center',
-  //   justifyContent: 'space-between',
-  //   textAlign: 'center',
-  //   cursor: 'pointer',
-  // },
+
+  textInputsStyle: {
+    display: 'grid',
+    gridTamplateRows: '1fr 1fr',
+    gap: '0.2vw',
+  },
 };
 
 // Opção de botão para fechar modal

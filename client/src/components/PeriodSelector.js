@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import M from 'materialize-css';
-import './style.css';
+import './css/transactions.css';
 import ArrowButton from './ArrowButton';
 import './css/periodSelector.css';
 

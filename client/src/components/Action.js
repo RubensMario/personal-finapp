@@ -16,8 +16,6 @@ export default function Action({ type, onActionClick }) {
 
 const styles = {
   actionStyle: {
-    // paddingLeft: '0.3rem',
-    // marginLeft: '2rem',
     fontSize: '1.2rem',
     cursor: 'pointer',
   },

@@ -12,7 +12,7 @@ export default function App() {
   // period = {id:n, date:yyyy-mm, name:'nome_mes/yyyy'}
   const [currentPeriod, setCurrentPeriod] = useState(PERIODS[0]);
   // transações do período (mm-yyyy) selecionado (usado se o filtro está vazio)
-  /*  currentTransaction = { transactionsNumber: n, balance:R$ n, transactionsList: [transações do mês] } */
+  /* currentTransaction = { transactionsNumber: n, balance:R$ n, transactionsList: [transações do mês] } */
   const [currentTransactionsData, setCurrentTransactionsData] = useState({
     transactionsList: [],
   });
@@ -27,6 +27,8 @@ export default function App() {
   useEffect(() => {
     const currentDate = currentPeriod.date;
     getCurrentTransactions(currentDate);
+
+    console.log(currentTransactionsData);
   }, [currentPeriod]);
 
   const handlePeriodChange = (newPeriod) => {
@@ -37,10 +39,17 @@ export default function App() {
     // Impedir execução antes de currentPeriod ser preenchido
     if (!currentPeriod.date) return;
 
-    const transactions = await getTransactionsFrom(date);
+    const transactionsData = await getTransactionsFrom(date);
 
-    setCurrentTransactionsData(transactions);
-    setFilteredTransactionsData(transactions);
+    transactionsData.transactionsList.sort((a, b) => a.day - b.day);
+
+    // const newTransactionsData = {
+    //   ...transactionsData,
+    //   transactionsList: sortedTransactionsList,
+    // };
+
+    setCurrentTransactionsData(transactionsData);
+    setFilteredTransactionsData(transactionsData);
   }
 
   const handleFilterChange = (newTextToFilter) => {
@@ -101,7 +110,7 @@ export default function App() {
       (transaction) => transaction._id === selectedId
     );
 
-    console.log(newSelectedTransaction);
+    setIsEdit(true);
     setIsModalOpen(true);
     setSelectedTransaction(newSelectedTransaction);
   };
@@ -160,6 +169,7 @@ export default function App() {
           currentTransactionsData={filteredTransactionsData}
           onEditTransaction={handleEditTransaction}
           onDeleteTransaction={handleDeleteTransaction}
+          isEdit={isEdit}
         />
         {isModalOpen && (
           <ModalTransaction

@@ -1,5 +1,5 @@
 import React from 'react';
-import './style.css';
+import './css/transactions.css';
 import Transaction from './Transaction';
 // {/* <p>{currentTransaction.transactionsList[0].description}</p> */}
 

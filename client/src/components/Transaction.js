@@ -47,27 +47,38 @@ export default function Transaction({ transaction, onEdit, onDelete }) {
         <span value={description}>{description}</span>
       </div>
       <div className="actionAndValue" style={actionAndValueStyle}>
-        <div style={{ marginLeft: '30px', width: '8rem' }}>
+        <div>
           <span style={type === '+' ? incomingValue : outgoingValue}>
             <strong>{formatNumber(value)}</strong>
           </span>
         </div>
-        <Action type={'edit'} onActionClick={handleActionClick} />
-        <Action type={'delete'} onActionClick={handleActionClick} />
+        <div style={{ width: '30%', marginLeft: '10%' }}>
+          <Action type={'edit'} onActionClick={handleActionClick} />
+          <Action type={'delete'} onActionClick={handleActionClick} />
+        </div>
       </div>
     </div>
   );
 }
+
+// 1ª div filha de actionValue
+// style={{ marginLeft: '2.17vw', width: '8rem' }}
 
 const styles = {
   containerStyle: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-evenly',
     flexWrap: 'wrap',
     width: '50%',
   },
+  // containerStyle: {
+  //   display: 'grid',
+  //   gridTemplateColumns: '0.3fr 1fr 1fr 1fr',
+  //   width: '50%',
+  //   alignItems: 'center',
+  // },
 
   transactionStyle: {
     border: '0.1vw solid ',
@@ -75,26 +86,25 @@ const styles = {
     borderRadius: '0.4vw',
     padding: '0.02vw',
     margin: '0.5px',
+    textAlign: 'left',
   },
 
   dayStyle: {
-    // marginRight: '2%',
-    padding: '2%',
+    width: '2%',
   },
 
   actionAndValueStyle: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'strech',
-    marginleft: '10px',
+    justifyContent: 'flex-end',
+    width: '50%',
   },
 
   descriptionAndTypeStyle: {
     display: 'flex',
     flexDirection: 'column',
-    padding: '2%',
-    justifyContent: 'space-between',
-    width: '50%', // Fundamental para o alinhamento dos valores dos lançamentos
+    justifyContent: 'flex-start',
+    width: '30%', // Fundamental para o alinhamento dos valores dos lançamentos
   },
 
   incomingValue: {

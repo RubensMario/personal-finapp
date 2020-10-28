@@ -7,6 +7,7 @@ import Spinner from './components/Spinner';
 import Summary from './components/Summary';
 import Filter from './components/Filter';
 import ModalTransaction from './components/ModalTransaction';
+import './app.css';
 
 export default function App() {
   // period = {id:n, date:yyyy-mm, name:'nome_mes/yyyy'}
@@ -120,6 +121,11 @@ export default function App() {
     await getCurrentTransactions(currentPeriod.date);
   };
 
+  const handleInsertTransaction = async () => {
+    setIsModalOpen(true);
+    setIsEdit(false);
+  };
+
   const handleModalClose = () => {
     setIsModalOpen(false);
   };
@@ -165,6 +171,14 @@ export default function App() {
           transactionsNumber={transactionsNumber}
         />
         <Filter onFilterChange={handleFilterChange} />
+        {!isModalOpen && (
+          <button
+            className="waves-effect btn-small create-transaction"
+            onClick={handleInsertTransaction}
+          >
+            Novo lançamento
+          </button>
+        )}
         <Transactions
           currentTransactionsData={filteredTransactionsData}
           onEditTransaction={handleEditTransaction}

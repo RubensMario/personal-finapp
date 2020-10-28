@@ -34,7 +34,7 @@ export default function Transaction({ transaction, onEdit, onDelete }) {
   };
 
   return (
-    <div style={{ ...transactionStyle, ...containerStyle }}>
+    <div className="card" style={{ ...transactionStyle, ...containerStyle }}>
       <div className="day" style={dayStyle}>
         <span>
           <strong>{day}</strong>
@@ -73,12 +73,6 @@ const styles = {
     flexWrap: 'wrap',
     width: '50%',
   },
-  // containerStyle: {
-  //   display: 'grid',
-  //   gridTemplateColumns: '0.3fr 1fr 1fr 1fr',
-  //   width: '50%',
-  //   alignItems: 'center',
-  // },
 
   transactionStyle: {
     border: '0.1vw solid ',

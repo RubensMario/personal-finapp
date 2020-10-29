@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 
-// Aqui havia um erro difícil de pegar. Importei como "transactionModel",
-// com "t" minúsculo. No Windows, isso não faz diferença. Mas como no Heroku
-// o servidor é Linux, isso faz diferença. Gastei umas boas horas tentando
-// descobrir esse erro :-/
 const TransactionModel = require('../models/TransactionModel');
 const { findByIdAndRemove } = require('../models/TransactionModel');
 
@@ -34,31 +30,31 @@ const getAll = async (req, res) => {
     });
     //------------ frontend
 
-    // Filtro por descrição (em um período)
-    const filterString = 'pra';
-    const filteredTransactionList = transactionsList.filter(
-      ({ description }) => {
-        return description.toLowerCase().includes(filterString);
-      }
-    );
-    // Valor total das despesas filtradas
-    const filteredNegativeTransactions = filteredTransactionList.reduce(
-      (acc, curr) => {
-        return acc + curr.value;
-      },
-      0
-    );
+    // // Filtro por descrição (em um período)
+    // const filterString = 'pra';
+    // const filteredTransactionList = transactionsList.filter(
+    //   ({ description }) => {
+    //     return description.toLowerCase().includes(filterString);
+    //   }
+    // );
+    // // Valor total das despesas filtradas
+    // const filteredNegativeTransactions = filteredTransactionList.reduce(
+    //   (acc, curr) => {
+    //     return acc + curr.value;
+    //   },
+    //   0
+    // );
 
-    console.log(filteredNegativeTransactions);
+    // console.log(filteredNegativeTransactions);
 
-    // Filtro por categoria (em um período)
-    const transactionCategory = 'Saúde';
-    const filteredTransactionsByCategory = transactionsList.filter(
-      ({ category }) => {
-        return category === transactionCategory;
-      }
-    );
-    //-----------------------
+    // // Filtro por categoria (em um período)
+    // const transactionCategory = 'Saúde';
+    // const filteredTransactionsByCategory = transactionsList.filter(
+    //   ({ category }) => {
+    //     return category === transactionCategory;
+    //   }
+    // );
+    // //-----------------------
 
     // transactionsNumber e balance talvez devessem ser calculados no frontend
     res.send({

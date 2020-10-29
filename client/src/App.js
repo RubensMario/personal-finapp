@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import Select from './components/PeriodSelector';
 import Transactions from './components/Transactions';
 import PERIODS from './helpers/periods';
-import { getTransactionsFrom, deleteTransaction } from './api/apiService';
+import {
+  getTransactionsFrom,
+  deleteTransaction,
+  postTransaction,
+} from './api/apiService';
 import Spinner from './components/Spinner';
 import Summary from './components/Summary';
 import Filter from './components/Filter';
@@ -43,11 +47,6 @@ export default function App() {
     const transactionsData = await getTransactionsFrom(date);
 
     transactionsData.transactionsList.sort((a, b) => a.day - b.day);
-
-    // const newTransactionsData = {
-    //   ...transactionsData,
-    //   transactionsList: sortedTransactionsList,
-    // };
 
     setCurrentTransactionsData(transactionsData);
     setFilteredTransactionsData(transactionsData);
@@ -130,6 +129,52 @@ export default function App() {
     setIsModalOpen(false);
   };
 
+  const handleModalSave = (formData, isEdit) => {
+    if (!isEdit) {
+      const { yearMonthDay } = formData;
+      const year = parseInt(yearMonthDay.substring(0, 4));
+      const month = parseInt(yearMonthDay.substring(5, 7));
+      const day = parseInt(yearMonthDay.substring(8, 10));
+      const yearMonth = yearMonthDay.substring(0, 7);
+
+      const newTransaction = { ...formData, year, month, day, yearMonth };
+
+      const postedTransaction = postTransaction(newTransaction);
+
+      setIsModalOpen(false);
+
+      // console.log(newTransaction);
+      // console.log(currentTransactionsData.transactionsList);
+
+      const newTransactionsList = [
+        ...currentTransactionsData.transactionsList,
+        newTransaction,
+      ];
+
+      const { balance, transactionsNumber } = getDataFromTransactions(
+        newTransactionsList
+      );
+
+      const newTransactionsData = {
+        transactionsNumber,
+        balance,
+        transactionsList: newTransactionsList,
+      };
+
+      setCurrentTransactionsData(newTransactionsData);
+      setFilteredTransactionsData(newTransactionsData);
+    }
+
+    // console.log(newTransactionsList);
+
+    // const handleActionClick = (type) => {
+    //   // Object literals
+    //   const actionClickType = {
+    //     delete: () => onDelete(_id),
+    //     edit: () => onEdit(_id),
+    //   };
+  };
+
   const {
     incomings,
     outgoings,
@@ -191,6 +236,7 @@ export default function App() {
             isEdit={isEdit}
             onClose={handleModalClose}
             selectedTransaction={selectedTransaction}
+            onSave={handleModalSave}
           />
         )}
       </div>

@@ -8,18 +8,13 @@ export default function ModalTransaction({
   isOpen,
   isEdit,
   onClose,
+  onSave,
   selectedTransaction,
 }) {
   // const [mode, setMode] = useState('insert');
   const [formData, setFormData] = useState(selectedTransaction);
 
-  const {
-    closeButtonStyle,
-    saveButtonStyle,
-    modalStyle,
-    headerStyle,
-    textInputsStyle,
-  } = styles;
+  const { closeButtonStyle, saveButtonStyle, modalStyle, headerStyle } = styles;
 
   const { type, category, description, value, yearMonthDay } = formData;
 
@@ -40,18 +35,23 @@ export default function ModalTransaction({
     onClose();
   };
 
-  const handleFormSubmit = () => {};
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+
+    onSave(formData, isEdit);
+  };
 
   // Cada troca de um radio button modifica o estado formData
-  // e é renderizada a seleção do botão tornando-o colorido
+  // e a seleção do botão é renderizada tornando-o colorido
   const handleInputsChange = (event) => {
     // name: o que o input permite selecionar (ex:type do lançamento)
     // value: o valor escolhido: (ex: type '+' ou type '-')
-    const { name, value } = event.target;
+    let { name, value } = event.target;
+
+    name === 'value' && (value = parseFloat(value));
 
     // modifica apenas a propriedade indicada com name (type,category, etc)
     setFormData({ ...formData, [name]: value });
-    console.log(formData);
   };
 
   const validate = () => {
@@ -295,7 +295,6 @@ const styles = {
       bottom: 'auto',
       marginRight: '-50%',
       transform: 'translate(-50%, -40%)', // move um objeto nos eixos x e y
-      // height: '90%',
     },
   },
   headerStyle: {
@@ -303,11 +302,11 @@ const styles = {
     flexDirection: 'row',
   },
 
-  textInputsStyle: {
-    display: 'grid',
-    gridTamplateRows: '1fr 1fr',
-    gap: '0.2vw',
-  },
+  // textInputsStyle: {
+  //   display: 'grid',
+  //   gridTamplateRows: '1fr 1fr',
+  //   gap: '0.2vw',
+  // },
 };
 
 // Opção de botão para fechar modal

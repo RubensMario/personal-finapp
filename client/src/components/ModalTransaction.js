@@ -56,7 +56,8 @@ export default function ModalTransaction({
 
   const validate = () => {
     const { description, value } = formData;
-    const validated = description && description !== '' && value > 0;
+    const validated =
+      description && description !== '' && value > 0 && yearMonthDay;
     return validated;
   };
 
@@ -202,9 +203,14 @@ export default function ModalTransaction({
               </label>
             </div>
           </fieldset>
+
           <div className="text-inputs-style">
             <div className="field input-field ">
-              <label htmlFor="description" className="active">
+              <label
+                htmlFor="description"
+                className="active"
+                style={{ backgroundColor: 'white' }}
+              >
                 Descrição
               </label>
               <input
@@ -310,12 +316,11 @@ const styles = {
 };
 
 // Opção de botão para fechar modal
-{
-  /* <button
+
+/* <button
 className="waves-effect waves-circle btn-small"
 style={closeButtonStyle}
 onClick={handleCloseButton}
 >
 X
 </button> */
-}

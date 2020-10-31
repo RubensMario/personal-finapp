@@ -5,7 +5,8 @@ import PERIODS from './helpers/periods';
 import {
   getTransactionsFrom,
   deleteTransaction,
-  postTransaction,
+  createTransaction,
+  updateTransaction,
 } from './api/apiService';
 import Spinner from './components/Spinner';
 import Summary from './components/Summary';
@@ -123,56 +124,36 @@ export default function App() {
   const handleInsertTransaction = async () => {
     setIsModalOpen(true);
     setIsEdit(false);
+    setSelectedTransaction({});
   };
 
   const handleModalClose = () => {
     setIsModalOpen(false);
   };
 
-  const handleModalSave = (formData, isEdit) => {
-    if (!isEdit) {
-      const { yearMonthDay } = formData;
-      const year = parseInt(yearMonthDay.substring(0, 4));
-      const month = parseInt(yearMonthDay.substring(5, 7));
-      const day = parseInt(yearMonthDay.substring(8, 10));
-      const yearMonth = yearMonthDay.substring(0, 7);
+  const completeTransaction = (formData) => {
+    const { yearMonthDay } = formData;
+    const year = parseInt(yearMonthDay.substring(0, 4));
+    const month = parseInt(yearMonthDay.substring(5, 7));
+    const day = parseInt(yearMonthDay.substring(8, 10));
+    const yearMonth = yearMonthDay.substring(0, 7);
 
-      const newTransaction = { ...formData, year, month, day, yearMonth };
+    const completeTransaction = { ...formData, year, month, day, yearMonth };
 
-      const postedTransaction = postTransaction(newTransaction);
+    return completeTransaction;
+  };
 
-      setIsModalOpen(false);
+  const handleModalSave = async (formData, isEdit) => {
+    setIsModalOpen(false);
 
-      // console.log(newTransaction);
-      // console.log(currentTransactionsData.transactionsList);
+    const newTransaction = completeTransaction(formData);
 
-      const newTransactionsList = [
-        ...currentTransactionsData.transactionsList,
-        newTransaction,
-      ];
+    isEdit
+      ? await updateTransaction(newTransaction)
+      : await createTransaction(newTransaction);
 
-      const { balance, transactionsNumber } = getDataFromTransactions(
-        newTransactionsList
-      );
-
-      const newTransactionsData = {
-        transactionsNumber,
-        balance,
-        transactionsList: newTransactionsList,
-      };
-
-      setCurrentTransactionsData(newTransactionsData);
-      setFilteredTransactionsData(newTransactionsData);
-    }
-
-    // console.log(newTransactionsList);
-
-    // const handleActionClick = (type) => {
-    //   // Object literals
-    //   const actionClickType = {
-    //     delete: () => onDelete(_id),
-    //     edit: () => onEdit(_id),
-    //   };
+    // Balance e transactionsNumber são calculados no backend
+    getCurrentTransactions(currentPeriod.date);
   };
 
   const {

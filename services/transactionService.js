@@ -1,8 +1,9 @@
+// Módulo com as middlewares das rotas em routes
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 
 const TransactionModel = require('../models/TransactionModel');
-const { findByIdAndRemove } = require('../models/TransactionModel');
+// const { findByIdAndRemove } = require('../models/TransactionModel');
 
 // Lista os lançamentos (transações) de um mês
 const getAll = async (req, res) => {
@@ -25,38 +26,11 @@ const getAll = async (req, res) => {
       return newValue;
     });
 
+    // balance e transactionsNumber poderiam ser calculados no client side
     const balance = valuesArray.reduce((acc, curr) => {
       return acc + curr;
     });
-    //------------ frontend
 
-    // // Filtro por descrição (em um período)
-    // const filterString = 'pra';
-    // const filteredTransactionList = transactionsList.filter(
-    //   ({ description }) => {
-    //     return description.toLowerCase().includes(filterString);
-    //   }
-    // );
-    // // Valor total das despesas filtradas
-    // const filteredNegativeTransactions = filteredTransactionList.reduce(
-    //   (acc, curr) => {
-    //     return acc + curr.value;
-    //   },
-    //   0
-    // );
-
-    // console.log(filteredNegativeTransactions);
-
-    // // Filtro por categoria (em um período)
-    // const transactionCategory = 'Saúde';
-    // const filteredTransactionsByCategory = transactionsList.filter(
-    //   ({ category }) => {
-    //     return category === transactionCategory;
-    //   }
-    // );
-    // //-----------------------
-
-    // transactionsNumber e balance talvez devessem ser calculados no frontend
     res.send({
       transactionsNumber: transactionsList.length,
       balance,

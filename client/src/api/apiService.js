@@ -13,15 +13,27 @@ async function getTransactionsFrom(date) {
 }
 
 async function deleteTransaction(_id) {
-  const response = await api.delete(`${RESOURCE}/${_id}`);
+  await api.delete(`${RESOURCE}/${_id}`);
 
   return;
 }
 
-async function postTransaction(transaction) {
+async function createTransaction(transaction) {
   const response = await api.post(RESOURCE, transaction);
 
   return response.data;
 }
 
-export { getTransactionsFrom, deleteTransaction, postTransaction };
+async function updateTransaction(transaction) {
+  const { _id } = transaction;
+  const response = await api.put(`${RESOURCE}/${_id}`, transaction);
+
+  return response.data;
+}
+
+export {
+  getTransactionsFrom,
+  deleteTransaction,
+  createTransaction,
+  updateTransaction,
+};

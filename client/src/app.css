@@ -2,11 +2,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #2196f3;
+  background-color: #2196f3;
   margin-left: 40%;
   margin-bottom: 10px;
 }
 
-button .create-transaction:hover {
-  background: yellow;
+.btn:hover,
+.btn-large:hover,
+.btn-small:hover {
+  background-color: #69bafc;
 }

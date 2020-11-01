@@ -1,6 +1,6 @@
 import React from 'react';
-import './css/transactions.css';
 import Transaction from './Transaction';
+import './css/transactions.css';
 // {/* <p>{currentTransaction.transactionsList[0].description}</p> */}
 
 /*  currentTransaction = { transactionsNumber: n, balance:R$ n, transactionsList: [transações do mês] } */

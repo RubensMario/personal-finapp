@@ -13,6 +13,7 @@ import Summary from './components/Summary';
 import Filter from './components/Filter';
 import ModalTransaction from './components/ModalTransaction';
 import './app.css';
+import PieChart from './components/PieChart';
 
 export default function App() {
   // period = {id:n, date:yyyy-mm, name:'nome_mes/yyyy'}
@@ -205,12 +206,15 @@ export default function App() {
             Novo lançamento
           </button>
         )}
-        <Transactions
-          currentTransactionsData={filteredTransactionsData}
-          onEditTransaction={handleEditTransaction}
-          onDeleteTransaction={handleDeleteTransaction}
-          isEdit={isEdit}
-        />
+        <div className="cards-and-chart">
+          <Transactions
+            currentTransactionsData={filteredTransactionsData}
+            onEditTransaction={handleEditTransaction}
+            onDeleteTransaction={handleDeleteTransaction}
+            isEdit={isEdit}
+          />
+          <PieChart chartData={filteredTransactionsData} />
+        </div>
         {isModalOpen && (
           <ModalTransaction
             isOpen={isModalOpen}

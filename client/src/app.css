@@ -4,11 +4,17 @@
   justify-content: center;
   background-color: #2196f3;
   margin-left: 40%;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 .btn:hover,
 .btn-large:hover,
 .btn-small:hover {
   background-color: #69bafc;
+}
+
+.cards-and-chart {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }

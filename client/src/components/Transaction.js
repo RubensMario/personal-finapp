@@ -52,7 +52,7 @@ export default function Transaction({ transaction, onEdit, onDelete }) {
             <strong>{formatNumber(value)}</strong>
           </span>
         </div>
-        <div style={{ width: '30%', marginLeft: '10%' }}>
+        <div style={{ marginLeft: '10%' }}>
           <Action type={'edit'} onActionClick={handleActionClick} />
           <Action type={'delete'} onActionClick={handleActionClick} />
         </div>
@@ -71,7 +71,7 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'space-evenly',
     flexWrap: 'wrap',
-    width: '50%',
+    width: '100%',
   },
 
   transactionStyle: {

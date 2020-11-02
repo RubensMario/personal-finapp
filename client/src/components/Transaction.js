@@ -61,9 +61,6 @@ export default function Transaction({ transaction, onEdit, onDelete }) {
   );
 }
 
-// 1ª div filha de actionValue
-// style={{ marginLeft: '2.17vw', width: '8rem' }}
-
 const styles = {
   containerStyle: {
     display: 'flex',

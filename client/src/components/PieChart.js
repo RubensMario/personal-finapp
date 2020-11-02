@@ -3,7 +3,50 @@ import './css/pieChart.css';
 import Chart from 'react-google-charts';
 
 export default function PieChart({ chartData }) {
-  const { category, value } = chartData;
+  let chartMap = new Map();
+  let categorySet = new Set();
+
+  // Evitar execução da função com valor undefined pra transactionsList
+  chartData.transactionsList[0] && createChartMap();
+
+  function createChartMap() {
+    for (let transaction of chartData.transactionsList) {
+      categorySet.add(transaction.category);
+    }
+
+    categorySet.forEach((category) => {
+      let keyValue = 0;
+
+      chartData.transactionsList.forEach((transaction) => {
+        if (transaction.category === category) {
+          keyValue = transaction.value + keyValue;
+          chartMap.set(category, keyValue);
+        }
+      });
+    });
+
+    /* TESTE */
+    // console.log(chartData.transactionsList);
+    const transportTransactions = chartData.transactionsList.filter(
+      (transaction) => transaction.category == 'Transporte'
+    );
+    const marketTransactions = chartData.transactionsList.filter(
+      (transaction) => transaction.category == 'Mercado'
+    );
+
+    const transportTransactionsValue = transportTransactions.reduce(
+      (acc, curr) => acc + curr.value,
+      0
+    );
+    const marketTransactionsValue = marketTransactions.reduce(
+      (acc, curr) => acc + curr.value,
+      0
+    );
+
+    console.log('Transporte: ' + transportTransactionsValue);
+    console.log('Mercado: ' + marketTransactionsValue);
+  }
+
   const pieOptions = {
     legend: {
       position: 'right',
@@ -24,13 +67,10 @@ export default function PieChart({ chartData }) {
     },
     width: '100%',
   };
-  const categoriesData = [
-    ['Mercado', 200],
-    // ['Mercado', 1000],
-    ['Lazer', 3000],
-    ['Saúde', 2000],
-    ['Saldo', chartData.balance],
-  ];
+
+  const chartMatrix = Array.from(chartMap);
+  const categoriesData = [...chartMatrix, ['Saldo', chartData.balance]];
+
   return (
     <div className="chart-container">
       <Chart

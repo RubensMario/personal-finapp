@@ -23,19 +23,18 @@ export default function App() {
   const [currentTransactionsData, setCurrentTransactionsData] = useState({
     transactionsList: [],
   });
-  // Se não há filtro, seu conteúdo é preenchido com currentTransactions
+  // Sem texto no filtro, seu conteúdo é preenchido com currentTransactions
   const [filteredTransactionsData, setFilteredTransactionsData] = useState({
     transactionsList: [],
   });
   const [selectedTransaction, setSelectedTransaction] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
+  const [filteredText, setFilteredText] = useState('');
 
   useEffect(() => {
     const currentDate = currentPeriod.date;
-    getCurrentTransactions(currentDate);
-
-    console.log(currentTransactionsData);
+    getCurrentTransactions(currentDate, '');
   }, [currentPeriod]);
 
   const handlePeriodChange = (newPeriod) => {
@@ -53,32 +52,6 @@ export default function App() {
     setCurrentTransactionsData(transactionsData);
     setFilteredTransactionsData(transactionsData);
   }
-
-  const handleFilterChange = (newTextToFilter) => {
-    // Sem texto no filtro, exibir todas as transações do mês
-    if (newTextToFilter.trim() === '') {
-      setFilteredTransactionsData(currentTransactionsData);
-    } else {
-      const lowerCaseCategory = newTextToFilter.toLowerCase();
-
-      const filteredTransactions = currentTransactionsData.transactionsList.filter(
-        (transaction) =>
-          transaction.category.toLowerCase().includes(lowerCaseCategory)
-      );
-
-      const { balance, transactionsNumber } = getDataFromTransactions(
-        filteredTransactions
-      );
-
-      const newFilteredTransactionsData = {
-        transactionsNumber,
-        balance,
-        transactionsList: filteredTransactions,
-      };
-
-      setFilteredTransactionsData(newFilteredTransactionsData);
-    }
-  };
 
   // transactions: array apenas com lançamentos
   const getDataFromTransactions = (transactions) => {
@@ -107,6 +80,45 @@ export default function App() {
     return { incomings, outgoings, balance, transactionsNumber };
   };
 
+  const completeTransaction = (formData) => {
+    const { yearMonthDay } = formData;
+    const year = parseInt(yearMonthDay.substring(0, 4));
+    const month = parseInt(yearMonthDay.substring(5, 7));
+    const day = parseInt(yearMonthDay.substring(8, 10));
+    const yearMonth = yearMonthDay.substring(0, 7);
+
+    const completeTransaction = { ...formData, year, month, day, yearMonth };
+
+    return completeTransaction;
+  };
+
+  const handleFilterChange = (newTextToFilter) => {
+    // Sem texto no filtro, exibir todas as transações do mês
+    if (newTextToFilter.trim() === '') {
+      setFilteredTransactionsData(currentTransactionsData);
+    } else {
+      const lowerCaseCategory = newTextToFilter.toLowerCase();
+
+      const filteredTransactions = currentTransactionsData.transactionsList.filter(
+        (transaction) =>
+          transaction.category.toLowerCase().includes(lowerCaseCategory)
+      );
+
+      const { balance, transactionsNumber } = getDataFromTransactions(
+        filteredTransactions
+      );
+
+      const newFilteredTransactionsData = {
+        transactionsNumber,
+        balance,
+        transactionsList: filteredTransactions,
+      };
+
+      setFilteredText(newTextToFilter);
+      setFilteredTransactionsData(newFilteredTransactionsData);
+    }
+  };
+
   const handleEditTransaction = (selectedId) => {
     const newSelectedTransaction = currentTransactionsData.transactionsList.find(
       (transaction) => transaction._id === selectedId
@@ -120,7 +132,12 @@ export default function App() {
   const handleDeleteTransaction = async (_id) => {
     await deleteTransaction(_id);
     await getCurrentTransactions(currentPeriod.date);
+
+    // console.log(filteredText);
+    // handleFilterChange(filteredText);
   };
+
+  console.log(filteredText);
 
   const handleInsertTransaction = async () => {
     setIsModalOpen(true);
@@ -130,18 +147,6 @@ export default function App() {
 
   const handleModalClose = () => {
     setIsModalOpen(false);
-  };
-
-  const completeTransaction = (formData) => {
-    const { yearMonthDay } = formData;
-    const year = parseInt(yearMonthDay.substring(0, 4));
-    const month = parseInt(yearMonthDay.substring(5, 7));
-    const day = parseInt(yearMonthDay.substring(8, 10));
-    const yearMonth = yearMonthDay.substring(0, 7);
-
-    const completeTransaction = { ...formData, year, month, day, yearMonth };
-
-    return completeTransaction;
   };
 
   const handleModalSave = async (formData, isEdit) => {

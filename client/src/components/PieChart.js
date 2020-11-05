@@ -11,7 +11,8 @@ export default function PieChart({ chartData }) {
 
   function createChartMap() {
     for (let transaction of chartData.transactionsList) {
-      categorySet.add(transaction.category);
+      transaction.category !== 'Receita' &&
+        categorySet.add(transaction.category);
     }
 
     categorySet.forEach((category) => {
@@ -24,33 +25,11 @@ export default function PieChart({ chartData }) {
         }
       });
     });
-
-    /* TESTE */
-    // console.log(chartData.transactionsList);
-    const transportTransactions = chartData.transactionsList.filter(
-      (transaction) => transaction.category == 'Transporte'
-    );
-    const marketTransactions = chartData.transactionsList.filter(
-      (transaction) => transaction.category == 'Mercado'
-    );
-
-    const transportTransactionsValue = transportTransactions.reduce(
-      (acc, curr) => acc + curr.value,
-      0
-    );
-    const marketTransactionsValue = marketTransactions.reduce(
-      (acc, curr) => acc + curr.value,
-      0
-    );
-
-    console.log('Transporte: ' + transportTransactionsValue);
-    console.log('Mercado: ' + marketTransactionsValue);
   }
 
   const pieOptions = {
     legend: {
       position: 'right',
-      // alignment: 'center',
       textStyle: {
         color: '233238',
         fontSize: 12,
@@ -69,7 +48,7 @@ export default function PieChart({ chartData }) {
   };
 
   const chartMatrix = Array.from(chartMap);
-  const categoriesData = [...chartMatrix, ['Saldo', chartData.balance]];
+  const completeChartMatrix = [...chartMatrix, ['Saldo', chartData.balance]];
 
   return (
     <div className="chart-container">
@@ -81,10 +60,10 @@ export default function PieChart({ chartData }) {
         data={[
           ['Category', 'Value'],
           // P/ que as despesas no gráfico sejam um percentual da receita total
-          ...categoriesData,
+          ...completeChartMatrix,
         ]}
         options={{
-          title: 'Popularity of Types of Pizza',
+          title: 'Saldo e despesas por categoria',
           sliceVisibilityThreshold: 0.01, // 20%
           ...pieOptions,
         }}

@@ -8,16 +8,36 @@ import {
   createTransaction,
   updateTransaction,
 } from './api/apiService';
-import Spinner from './components/Spinner';
 import Summary from './components/Summary';
 import Filter from './components/Filter';
 import ModalTransaction from './components/ModalTransaction';
 import './app.css';
 import PieChart from './components/PieChart';
 
+function findCurrentYearMonthIndex() {
+  const presentDate = `${new Date().getFullYear()}-${(new Date().getMonth() + 1)
+    .toString()
+    .padStart(2, '0')}`;
+
+  const currentYearMonth = PERIODS.find(
+    (period) => period.date === presentDate
+  );
+
+  const index = PERIODS.indexOf(currentYearMonth);
+
+  return index;
+}
+
+const currentYearMonthIndex = findCurrentYearMonthIndex();
+
 export default function App() {
   // period = {id:n, date:yyyy-mm, name:'nome_mes/yyyy'}
-  const [currentPeriod, setCurrentPeriod] = useState(PERIODS[0]);
+
+  // const [currentPeriod, setCurrentPeriod] = useState(PERIODS[23]);
+  const [currentPeriod, setCurrentPeriod] = useState(
+    PERIODS[currentYearMonthIndex + 1]
+  );
+
   // transações do período (mm-yyyy) selecionado (usado se o filtro está vazio)
   /* currentTransaction = { transactionsNumber: n, balance:R$ n, transactionsList: [transações do mês] } */
   const [currentTransactionsData, setCurrentTransactionsData] = useState({
@@ -34,24 +54,55 @@ export default function App() {
 
   useEffect(() => {
     const currentDate = currentPeriod.date;
-    getCurrentTransactions(currentDate, '');
+
+    getCurrentTransactions(currentDate);
+    console.log(filteredText);
+    console.log(currentDate);
   }, [currentPeriod]);
 
-  const handlePeriodChange = (newPeriod) => {
-    setCurrentPeriod(newPeriod);
-  };
+  useEffect(() => {
+    if (filteredText.trim() === '') {
+      setFilteredTransactionsData(currentTransactionsData);
+    } else {
+      const lowerCaseCategory = filteredText.toLowerCase();
 
-  async function getCurrentTransactions(date) {
+      const filteredTransactions = currentTransactionsData.transactionsList.filter(
+        (transaction) =>
+          transaction.category.toLowerCase().includes(lowerCaseCategory)
+      );
+
+      const { balance, transactionsNumber } = getDataFromTransactions(
+        filteredTransactions
+      );
+
+      const newFilteredTransactionsData = {
+        transactionsNumber,
+        balance,
+        transactionsList: filteredTransactions,
+      };
+
+      setFilteredTransactionsData(newFilteredTransactionsData);
+    }
+  }, [setFilteredTransactionsData, filteredText]);
+
+  const getCurrentTransactions = async (date) => {
     // Impedir execução antes de currentPeriod ser preenchido
-    if (!currentPeriod.date) return;
+    if (currentPeriod.date === undefined) return;
 
     const transactionsData = await getTransactionsFrom(date);
 
+    // Organizar lista em ordem crescente
     transactionsData.transactionsList.sort((a, b) => a.day - b.day);
 
     setCurrentTransactionsData(transactionsData);
-    setFilteredTransactionsData(transactionsData);
-  }
+    // setFilteredTransactionsData(transactionsData);
+
+    if (filteredText.length === 0) {
+      setFilteredTransactionsData(transactionsData);
+    } else {
+      handleFilterChange(filteredText);
+    }
+  };
 
   // transactions: array apenas com lançamentos
   const getDataFromTransactions = (transactions) => {
@@ -92,31 +143,41 @@ export default function App() {
     return completeTransaction;
   };
 
-  const handleFilterChange = (newTextToFilter) => {
-    // Sem texto no filtro, exibir todas as transações do mês
-    if (newTextToFilter.trim() === '') {
-      setFilteredTransactionsData(currentTransactionsData);
-    } else {
-      const lowerCaseCategory = newTextToFilter.toLowerCase();
+  const filterTransactionsList = (transactionsData, text) => {
+    const lowerCaseCategory = text.toLowerCase();
 
-      const filteredTransactions = currentTransactionsData.transactionsList.filter(
-        (transaction) =>
-          transaction.category.toLowerCase().includes(lowerCaseCategory)
-      );
+    const listToFilter = transactionsData.transactionsList;
+    // console.log(listToFilter);
+    const filteredTransactions = (listToFilter || []).filter((transaction) => {
+      transaction.category.toLowerCase().includes(lowerCaseCategory);
+    });
+    // console.log(filteredTransactions);
 
-      const { balance, transactionsNumber } = getDataFromTransactions(
-        filteredTransactions
-      );
+    filteredTransactions.sort((a, b) => a.day - b.day);
 
-      const newFilteredTransactionsData = {
-        transactionsNumber,
-        balance,
-        transactionsList: filteredTransactions,
-      };
+    return filteredTransactions;
+  };
 
-      setFilteredText(newTextToFilter);
-      setFilteredTransactionsData(newFilteredTransactionsData);
-    }
+  const completeTransactionsData = (transactions) => {
+    const { balance, transactionsNumber } = getDataFromTransactions(
+      transactions
+    );
+
+    const newTransactionsData = {
+      transactionsNumber,
+      balance,
+      transactionsList: transactions,
+    };
+
+    return newTransactionsData;
+  };
+
+  const handlePeriodChange = (newPeriod) => {
+    setCurrentPeriod(newPeriod);
+  };
+
+  const handleFilterChange = (textToFilter) => {
+    setFilteredText(textToFilter);
   };
 
   const handleEditTransaction = (selectedId) => {
@@ -131,13 +192,54 @@ export default function App() {
 
   const handleDeleteTransaction = async (_id) => {
     await deleteTransaction(_id);
-    await getCurrentTransactions(currentPeriod.date);
 
-    // console.log(filteredText);
-    // handleFilterChange(filteredText);
+    const newTransactionsData = await getTransactionsFrom(currentPeriod.date);
+    setCurrentTransactionsData(newTransactionsData);
+
+    // Filtrar lista pós-exclusão com texto do filtro (se houver)
+    const newTransactionsList = filterTransactionsList(
+      newTransactionsData,
+      filteredText
+    );
+
+    const newFilteredTransactionsData = completeTransactionsData(
+      newTransactionsList
+    );
+
+    setFilteredTransactionsData(newFilteredTransactionsData);
   };
 
-  console.log(filteredText);
+  const showNovemberTransactions = async () => {
+    const novemberTransactions = await getTransactionsFrom(PERIODS[22].date);
+
+    // console.log(novemberTransactions.transactionsList);
+
+    let text = 'mercado';
+    // console.log('filtro :' + text);
+
+    const newTransactionsList = filterTransactionsList(
+      novemberTransactions,
+      text
+    );
+
+    const newFilteredTransactionsData = completeTransactionsData(
+      newTransactionsList
+    );
+
+    // const newTransactionsList = filterTransactionsList(
+    //   currentTransactionsData,
+    //   text
+    // );
+
+    // const newFilteredTransactionsData = completeTransactionsData(
+    //   newTransactionsList
+    // );
+
+    // console.log(newFilteredTransactionsData);
+  };
+
+  // showNovemberTransactions();
+  // console.log(filteredText);
 
   const handleInsertTransaction = async () => {
     setIsModalOpen(true);
@@ -160,6 +262,7 @@ export default function App() {
 
     // Balance e transactionsNumber são calculados no backend
     getCurrentTransactions(currentPeriod.date);
+    // setFilteredTransactionsData(currentPeriod.date);
   };
 
   const {
@@ -186,9 +289,6 @@ export default function App() {
       </header>
 
       <div className="container">
-        {/* <h4 className="center" style={{ padding: '5%' }}>
-          <strong>CONTROLE FINANCEIRO</strong>
-        </h4> */}
         {!isModalOpen && (
           <Select
             allPeriods={PERIODS}
@@ -202,7 +302,7 @@ export default function App() {
           outgoings={outgoings}
           transactionsNumber={transactionsNumber}
         />
-        <Filter onFilterChange={handleFilterChange} />
+        <Filter onFilterChange={handleFilterChange} searchText={filteredText} />
         {!isModalOpen && (
           <button
             className="waves-effect btn-small create-transaction"
@@ -213,7 +313,7 @@ export default function App() {
         )}
         <div className="cards-and-chart">
           <Transactions
-            currentTransactionsData={filteredTransactionsData}
+            transactionsData={filteredTransactionsData}
             onEditTransaction={handleEditTransaction}
             onDeleteTransaction={handleDeleteTransaction}
             isEdit={isEdit}

@@ -39,7 +39,7 @@ export default function PieChart({ chartData }) {
       showColorCode: true,
     },
     chartArea: {
-      left: 100,
+      left: 165,
       top: 12,
       width: '90%',
       height: '90%',

@@ -5,7 +5,7 @@ import './css/transactions.css';
 
 /*  currentTransaction = { transactionsNumber: n, balance:R$ n, transactionsList: [transações do mês] } */
 export default function Transactions({
-  currentTransactionsData,
+  transactionsData,
   onEditTransaction,
   onDeleteTransaction,
 }) {
@@ -18,8 +18,8 @@ export default function Transactions({
   };
 
   return (
-    <div>
-      {currentTransactionsData.transactionsList.map((transaction) => {
+    <div className="transactions-inner">
+      {transactionsData.transactionsList.map((transaction) => {
         const { _id } = transaction;
 
         return (

@@ -1,3 +1,7 @@
 .dropdown-content {
   height: 200px;
 }
+
+.transactions-inner {
+  min-width: 50%;
+}

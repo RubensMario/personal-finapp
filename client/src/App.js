@@ -32,10 +32,8 @@ const currentYearMonthIndex = findCurrentYearMonthIndex();
 
 export default function App() {
   // period = {id:n, date:yyyy-mm, name:'nome_mes/yyyy'}
-
-  // const [currentPeriod, setCurrentPeriod] = useState(PERIODS[23]);
   const [currentPeriod, setCurrentPeriod] = useState(
-    PERIODS[currentYearMonthIndex + 1]
+    PERIODS[currentYearMonthIndex]
   );
 
   // transações do período (mm-yyyy) selecionado (usado se o filtro está vazio)
@@ -52,12 +50,29 @@ export default function App() {
   const [isEdit, setIsEdit] = useState(false);
   const [filteredText, setFilteredText] = useState('');
 
+  const getCurrentTransactions = async (date) => {
+    // Impedir execução antes de currentPeriod ser preenchido
+    if (currentPeriod.date === undefined) return;
+
+    const transactionsData = await getTransactionsFrom(date);
+
+    // Organizar lista em ordem crescente
+    transactionsData.transactionsList.sort((a, b) => a.day - b.day);
+
+    setCurrentTransactionsData(transactionsData);
+    // setFilteredTransactionsData(transactionsData);
+
+    if (filteredText.length === 0) {
+      setFilteredTransactionsData(transactionsData);
+    } else {
+      handleFilterChange(filteredText);
+    }
+  };
+
   useEffect(() => {
     const currentDate = currentPeriod.date;
 
     getCurrentTransactions(currentDate);
-    console.log(filteredText);
-    console.log(currentDate);
   }, [currentPeriod]);
 
   useEffect(() => {
@@ -83,26 +98,7 @@ export default function App() {
 
       setFilteredTransactionsData(newFilteredTransactionsData);
     }
-  }, [setFilteredTransactionsData, filteredText]);
-
-  const getCurrentTransactions = async (date) => {
-    // Impedir execução antes de currentPeriod ser preenchido
-    if (currentPeriod.date === undefined) return;
-
-    const transactionsData = await getTransactionsFrom(date);
-
-    // Organizar lista em ordem crescente
-    transactionsData.transactionsList.sort((a, b) => a.day - b.day);
-
-    setCurrentTransactionsData(transactionsData);
-    // setFilteredTransactionsData(transactionsData);
-
-    if (filteredText.length === 0) {
-      setFilteredTransactionsData(transactionsData);
-    } else {
-      handleFilterChange(filteredText);
-    }
-  };
+  }, [currentTransactionsData, filteredText]);
 
   // transactions: array apenas com lançamentos
   const getDataFromTransactions = (transactions) => {
@@ -143,17 +139,14 @@ export default function App() {
     return completeTransaction;
   };
 
+  /* filterTransactionsList e completeTransactionsData executam funções já realizadas pelo código em useEffect, mas substituí-lo por estas funções resulta em diversos tipos de erros */
   const filterTransactionsList = (transactionsData, text) => {
     const lowerCaseCategory = text.toLowerCase();
-
     const listToFilter = transactionsData.transactionsList;
-    // console.log(listToFilter);
+
     const filteredTransactions = (listToFilter || []).filter((transaction) => {
       transaction.category.toLowerCase().includes(lowerCaseCategory);
     });
-    // console.log(filteredTransactions);
-
-    filteredTransactions.sort((a, b) => a.day - b.day);
 
     return filteredTransactions;
   };
@@ -209,38 +202,6 @@ export default function App() {
     setFilteredTransactionsData(newFilteredTransactionsData);
   };
 
-  const showNovemberTransactions = async () => {
-    const novemberTransactions = await getTransactionsFrom(PERIODS[22].date);
-
-    // console.log(novemberTransactions.transactionsList);
-
-    let text = 'mercado';
-    // console.log('filtro :' + text);
-
-    const newTransactionsList = filterTransactionsList(
-      novemberTransactions,
-      text
-    );
-
-    const newFilteredTransactionsData = completeTransactionsData(
-      newTransactionsList
-    );
-
-    // const newTransactionsList = filterTransactionsList(
-    //   currentTransactionsData,
-    //   text
-    // );
-
-    // const newFilteredTransactionsData = completeTransactionsData(
-    //   newTransactionsList
-    // );
-
-    // console.log(newFilteredTransactionsData);
-  };
-
-  // showNovemberTransactions();
-  // console.log(filteredText);
-
   const handleInsertTransaction = async () => {
     setIsModalOpen(true);
     setIsEdit(false);
@@ -262,7 +223,6 @@ export default function App() {
 
     // Balance e transactionsNumber são calculados no backend
     getCurrentTransactions(currentPeriod.date);
-    // setFilteredTransactionsData(currentPeriod.date);
   };
 
   const {

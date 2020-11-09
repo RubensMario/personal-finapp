@@ -63,7 +63,7 @@ export default function PieChart({ chartData }) {
           ...completeChartMatrix,
         ]}
         options={{
-          title: 'Saldo e despesas por categoria',
+          title: 'Saldo e despesas por categoria', //não exibido
           sliceVisibilityThreshold: 0.01, // 20%
           ...pieOptions,
         }}

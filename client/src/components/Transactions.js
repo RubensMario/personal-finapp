@@ -1,7 +1,6 @@
 import React from 'react';
 import Transaction from './Transaction';
 import './css/transactions.css';
-// {/* <p>{currentTransaction.transactionsList[0].description}</p> */}
 
 /*  currentTransaction = { transactionsNumber: n, balance:R$ n, transactionsList: [transações do mês] } */
 export default function Transactions({
@@ -9,6 +8,8 @@ export default function Transactions({
   onEditTransaction,
   onDeleteTransaction,
 }) {
+  transactionsData.transactionsList.sort((a, b) => a.day - b.day);
+
   const handleEdit = (_id) => {
     onEditTransaction(_id);
   };

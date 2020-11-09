@@ -11,7 +11,6 @@ export default function ModalTransaction({
   onSave,
   selectedTransaction,
 }) {
-  // const [mode, setMode] = useState('insert');
   const [formData, setFormData] = useState(selectedTransaction);
 
   const { closeButtonStyle, saveButtonStyle, modalStyle, headerStyle } = styles;

@@ -217,7 +217,7 @@ export default function ModalTransaction({
                 id="description"
                 name="description"
                 required
-                pattern="[A-Za-zÀ-ú\s]+$"
+                // pattern="[A-Za-zÀ-ú\s]+$"
                 defaultValue={formData && description}
                 onChange={handleInputsChange}
                 style={{ height: '30px', fontSize: '15px' }}

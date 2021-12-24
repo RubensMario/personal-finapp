@@ -13,7 +13,7 @@ const MONTHS_NAME = [
   'nov',
   'dez',
 ];
-const YEARS = [2019, 2020, 2021];
+const YEARS = [2019, 2020, 2021, 2022, 2023, 2024, 2025];
 const PERIODS = [];
 
 let indexId = 0;

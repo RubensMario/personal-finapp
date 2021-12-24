@@ -168,15 +168,15 @@ export default function ModalTransaction({
                 <span>Moradia</span>
               </label>
 
-              <label className={category === 'Viagem' ? 'selected' : ''}>
+              <label className={category === 'Compras' ? 'selected' : ''}>
                 <input
                   type="radio"
                   name="category"
-                  value="Viagem"
+                  value="Compras"
                   onChange={handleInputsChange}
                 />
-                <i className="material-icons small">local_airport</i>
-                <span>Viagem</span>
+                <i className="material-icons small">credit_card</i>
+                <span>Compras</span>
               </label>
 
               <label className={category === 'Lazer' ? 'selected' : ''}>
